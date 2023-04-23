@@ -78,9 +78,15 @@ def calculate():
 
 
 def graphic():
+    a1 = [1, 1, 1, 1.03]
+    a2 = [1, 1.03, 2.5, 1.03]
+    a3 = [2.5, 1.03, 2.5, 1]
+    a4 = [1, 1, 2.5, 1]
+    plt.plot(a1, a2, a3, a4)
+    plt.show()
 
 
-    # --DADOS DE FABRICAÇÃO--
+# --DADOS DE FABRICAÇÃO--
 colors = ['Sem pintura', 'Branco', 'Preto', 'Verde']
 heights = [1.03, 1.53, 2.03]
 
