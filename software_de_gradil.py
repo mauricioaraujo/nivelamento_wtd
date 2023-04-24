@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import tkinter as tk
 from tkinter import ttk
+import tkinter.messagebox
 import datetime as dt
 import math
 
@@ -37,6 +38,8 @@ def validator():
 
 # CALCULATE FUNCTION
 def calculate():
+    label_information.configure(
+        text='')
 
     # STORE ORDER
     date = dt.datetime.now().strftime("%d/%m/%Y %H:%M")
@@ -73,32 +76,67 @@ def calculate():
     grid_lenght = grids_number*2.5
     diff = grid_lenght - float(entry_length.get())
 
-    # PLOT
-    graphic(grids_number)
+    if grid_lenght > float(entry_length.get()):
+        label_information.configure(
+            text=f'Diferença entre comprimento solicitado e orçado de {diff} metros')
+
 
 # GRAPHIC GENERATION FUNCION
 
 
-def graphic(grids_number):
-    # plot grid
-    x = [0, 0, 2.5*grids_number, 2.5*grids_number, 0]
-    y = [0, float(select_height.get()), float(select_height.get()), 0, 0]
-    plt.plot(x, y)
+def graphic():
+    plt.close()
+    colors_ = ['Sem pintura', 'Branco', 'Preto', 'Verde']
+    heights_ = [1.03, 1.53, 2.03]
 
-    # # plot screw
-    # x1 = [0, 0]
-    # y1 = [-0.2, float(select_height.get())]
-    # plt.plot(x1, y1)
+    def plot():
+        pinturas = {'Branco': 'whitesmoke', 'Preto': 'black', 'Verde': 'green'}
 
-    for i in range(grids_number+1):
-        x2 = [2.5*i, 2.5*i]
-        y2 = [-0.2, float(select_height.get())]
-        plt.plot(x2, y2)
+        # plot grid
+        x = [0, 0, 2.5, 2.5, 0]
+        y = [0, float(select_height.get()), float(select_height.get()), 0, 0]
+        try:
+            plt.plot(x, y, color=pinturas[select_color.get()])
+        except KeyError:
+            plt.plot(x, y, color=pinturas['Preto'])
 
-    plt.show()
+        for i in range(25):
+            x1 = [0.1*i, 0.1*i]
+            y1 = [0, float(select_height.get())]
+
+            try:
+                plt.plot(x1, y1, color=pinturas[select_color.get()])
+            except KeyError:
+                plt.plot(x1, y1, color=pinturas['Preto'])
+
+        # plot screw
+        for i in range(2):
+            x1 = [2.5*i, 2.5*i]
+            y1 = [-0.2, float(select_height.get())]
+
+            try:
+                plt.plot(x1, y1, color=pinturas[select_color.get()])
+            except KeyError:
+                plt.plot(x1, y1, color=pinturas['Preto'])
+
+        plt.show()
+
+    try:
+        heights_.index(float(select_height.get()))
+
+        try:
+            colors_.index(select_color.get())
+            label_validator.config(text='Esboço gerado!')
+            plot()
+
+        except ValueError:
+            label_validator.config(text='Cor indisponível!')
+
+    except ValueError:
+        label_validator.config(text='Altura indisponível!')
 
 
-# --DADOS DE FABRICAÇÃO--
+# --FABRICATION DATA--
 colors = ['Sem pintura', 'Branco', 'Preto', 'Verde']
 heights = [1.03, 1.53, 2.03]
 
@@ -131,7 +169,13 @@ select_color.grid(row=3, column=1, padx=5, pady=5,
 # --CONFIRM BUTTON--
 confirm_button = tk.Button(text='Confirmar pedido', command=validator)
 confirm_button.grid(row=4, column=0, padx=5, pady=5,
-                    sticky='nswe', columnspan=2)
+                    sticky='nswe', columnspan=1)
+
+# --GRAPHIC BUTTON--
+calculate_button = tk.Button(
+    text='Gerar esboço', command=graphic)
+calculate_button.grid(row=4, column=1, padx=5, pady=5,
+                      sticky='nswe', columnspan=1)
 
 # --LABEL VALIDATOR--
 label_validator = tk.Label(text='')
@@ -139,13 +183,20 @@ label_validator.grid(row=5, column=0, padx=5, pady=5,
                      sticky='nswe', columnspan=2)
 label_validator.configure(background='yellow')
 
+# LABEL INFORMATION
+label_information = tk.Label(text='')
+label_information.grid(row=6, column=0, padx=5, pady=5,
+                       sticky='nswe', columnspan=2)
+
+
 # --TABLE FRAME--
 label_historic = tk.Label(text='Quantidade de peças necessárias:')
-label_historic.grid(row=6, column=0, padx=5, pady=5,
+label_historic.grid(row=7, column=0, padx=5, pady=5,
                     sticky='nswe', columnspan=2)
 
+
 quote_table = ttk.Treeview(window)
-quote_table.grid(row=7, column=0, padx=5, pady=5, sticky='nswe', columnspan=2)
+quote_table.grid(row=8, column=0, padx=5, pady=5, sticky='nswe', columnspan=2)
 quote_table.configure(height=1)
 
 quote_table['columns'] = ("telas", "postes", "fixadores", "parafusos")
@@ -163,11 +214,11 @@ quote_table.heading("parafusos", text="Qtd. parafusos", anchor='center')
 
 # --HISTORIC FRAME--
 label_history = tk.Label(text='Histórico de pedidos')
-label_history.grid(row=8, column=0, padx=5, pady=5,
+label_history.grid(row=9, column=0, padx=5, pady=5,
                    sticky='nswe', columnspan=2)
 
 history_table = ttk.Treeview(window)
-history_table.grid(row=9, column=0, padx=5, pady=5,
+history_table.grid(row=10, column=0, padx=5, pady=5,
                    sticky='nswe', columnspan=2)
 
 history_table['columns'] = ("ID", "Comprimento", "Altura", "Pintura", "Data")
