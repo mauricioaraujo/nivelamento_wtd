@@ -24,7 +24,6 @@ def validator():
                 colors_.index(select_color.get())
                 label_validator.config(text='Pedido confirmado!')
                 calculate()
-                graphic()
 
             except ValueError:
                 label_validator.config(text='Cor indisponível!')
@@ -74,15 +73,28 @@ def calculate():
     grid_lenght = grids_number*2.5
     diff = grid_lenght - float(entry_length.get())
 
+    # PLOT
+    graphic(grids_number)
+
 # GRAPHIC GENERATION FUNCION
 
 
-def graphic():
-    a1 = [1, 1, 1, 1.03]
-    a2 = [1, 1.03, 2.5, 1.03]
-    a3 = [2.5, 1.03, 2.5, 1]
-    a4 = [1, 1, 2.5, 1]
-    plt.plot(a1, a2, a3, a4)
+def graphic(grids_number):
+    # plot grid
+    x = [0, 0, 2.5*grids_number, 2.5*grids_number, 0]
+    y = [0, float(select_height.get()), float(select_height.get()), 0, 0]
+    plt.plot(x, y)
+
+    # # plot screw
+    # x1 = [0, 0]
+    # y1 = [-0.2, float(select_height.get())]
+    # plt.plot(x1, y1)
+
+    for i in range(grids_number+1):
+        x2 = [2.5*i, 2.5*i]
+        y2 = [-0.2, float(select_height.get())]
+        plt.plot(x2, y2)
+
     plt.show()
 
 
